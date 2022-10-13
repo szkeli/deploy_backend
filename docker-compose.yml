@@ -1,7 +1,14 @@
 version: "3.2"
+
+networks:
+    database: 
+        driver: bridge
+
 services:
   zero:
     image: dgraph/dgraph:latest
+    networks:
+      - database
     volumes:
       - ./data:/dgraph
     ports:
@@ -13,6 +20,8 @@ services:
     image: dgraph/dgraph:latest
     volumes:
       - ./data:/dgraph
+    networks:
+      - database
     ports:
       - 8080:8080
       - 9080:9080
@@ -20,6 +29,8 @@ services:
     command: dgraph alpha --limit "mutations=strict;max-pending-queries=100000" --my=alpha:7080 --zero=zero:5080 --security whitelist=0.0.0.0/0
   ratel:
        image: dgraph/ratel
+       networks: 
+        - database
        restart: always
        ports: 
        - 7000:8000
